@@ -6,35 +6,14 @@
     <title>My page</title>
     <link href="output.css" rel="stylesheet">
   </head>
+
   <body class="container mx-auto mt-5 text-center">
     <script>
-      var countDown = new Date("Jan 1, 2023 00:00:01").getTime(); 
-      var x = setInterval(function() {
-        var now = new Date().getTime();
-        var distance = countDownDate - now;
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("demo").innerHTML = "Happy 2023!";
-        }
-      }, 1000);
-    </script>
-    <script>
-      document.getElementById("first").innerHTML = "First";
-    </script>
-      <script>
       let d = new Date();
       document.body.innerHTML = "<h1>Today's date is " + d + "</h1>";
     </script>
     <div class="grid grid-cols-4 gap-2">
-      <div class="element" id="first">
-        <p id="first"></p>
-      </div>
-      <p id="first"></p>
+    <script src="scripts.js"> </script>
       <div class="element">
       <h1 class='text-2xl'>Optimización</h1>
       <ul>
@@ -100,7 +79,7 @@
     </div>
   </body>
   <footer>
-    <p id="first">floor</p>
+    <script src="scripts.js"> </script>
   </footer>
 
 </html>
