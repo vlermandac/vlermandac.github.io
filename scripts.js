@@ -1,101 +1,110 @@
-// Create Title
-function createTitle(text) {
-  var title = document.createElement("h1");
-  title.classList.add("text-2xl");
-  title.innerText = text;
-  title.addEventListener('dblclick', editTitleText);
-  return title;
+class Title{
+  constructor(text, parentBoxID) {
+    this.title = document.createElement("h1");
+    this.title.classList.add("text-2xl");
+    this.title.innerText = text;
+    this.parentBoxID = parentBoxID;
+    this.title.addEventListener('dblclick', (event) => this.editTitleText(event));
+    return this.title;
+  }
+
+  editTitleText(event) {
+    const input = document.createElement('input');
+    var item = event.currentTarget;
+    input.value = item.innerText;
+    item.parentNode.insertBefore(input, item);
+    item.style.display = 'none';
+    input.addEventListener('blur', () => {
+      var p = input.parentNode;
+      p.insertBefore(new Title(input.value, this.parentBoxID), p.firstChild);
+      p.removeChild(input);
+      localStorage.setItem(this.parentBoxID, this.title.parentNode.outerHTML);
+    });
+  }
 }
 
-// Title Change
-function editTitleText() {
-  const currentText = this.innerText;
-  
-  // Create an input element
-  const input = document.createElement('input');
-  input.value = currentText;
-  
-  this.parentNode.insertBefore(input, this);
-  this.style.display = 'none';
-  
-  // Save changes when the input element loses focus
-  input.addEventListener('blur', saveTitleChanges);
+class Box {
+  constructor(id){
+    this.box = document.createElement("div");
+    this.box.id = id;
+    this.box.classList.add("element");
+    this.box.appendChild(new Title("New title", id));
+    this.ul = new ItemList(id);
+    this.box.appendChild(this.ul.ul);
+  }
 }
 
-function saveTitleChanges() {
-  const newText = this.value;
-  parentt = this.parentNode; 
-  parentt.removeChild(this);
-  parentt.insertBefore(createTitle(newText), parentt.firstChild);
+class ItemList {
+  constructor(parentBoxID){
+    this.id = parentBoxID;
+    this.ul = document.createElement("ul");
+    this.liFirst = document.createElement("li");
+    this.addItemButton = this.addButton(); 
+    this.liFirst.appendChild(this.addItemButton);
+    this.ul.appendChild(this.liFirst);
+  }
+
+  addButton(){
+    var button = document.createElement('button');
+    button.classList.add('text-2xl');
+    button.textContent = "+";
+    button.addEventListener('click', () => {
+      this.ul.insertBefore(this.addItem("New item"), this.liFirst);
+    });
+    return button;
+  }
+
+  addItem(text){
+    var item = document.createElement("li");
+    item.innerText = text;
+    item.addEventListener('dblclick', (event) => this.editItem(event));
+    return item;
+  }
+
+  editItem(event){
+    const input = document.createElement('input');
+    var item = event.currentTarget;
+    input.value = item.innerText;
+    item.parentNode.insertBefore(input, item);
+    item.style.display = 'none';
+    input.addEventListener('blur', () => {
+      var p = input.parentNode;
+      p.insertBefore(this.addItem(input.value), input.nextSibling);
+      p.removeChild(input);
+      localStorage.setItem(this.id, this.ul.parentNode.outerHTML);
+    });
+  }
+
+  removeItem(){
+  }
 }
 
-// Create li
-function createLi(text) {
-  var title = document.createElement("li");
-  title.innerText = text;
-  title.addEventListener('dblclick', editLiText);
-  return title;
-}
+// MAIN
 
-// Li Change
-function editLiText() {
-  const currentText = this.innerText;
-  
-  // Create an input element
-  const input = document.createElement('input');
-  input.value = currentText;
-  
-  this.parentNode.insertBefore(input, this);
-  this.style.display = 'none';
-  
-  // Save changes when the input element loses focus
-  input.addEventListener('blur', saveLiChanges);
-}
-
-function saveLiChanges() {
-  const newText = this.value;
-  nextLi = this.nextSibling;
-  parentt = this.parentNode; 
-  parentt.removeChild(this);
-  parentt.insertBefore(createLi(newText), nextLi);
-}
-
-
-// Button Box
+// grid container
+const boxes = document.getElementById("boxes"); 
 const button = document.getElementById("add-box-button");
-var num = 1;
 
+var id = parseInt(localStorage.getItem('counter'));
+if(!id) id = 1;
+
+// retrieve stored elements
+for (let i = 1; i < id; i++) {
+  //element different from id
+  if(localStorage.length == 0) break;
+  var storedBox = localStorage.getItem(i)
+  var newBox = new Box(i);
+  newBox.box.innerHTML = storedBox;
+  boxes.insertBefore(newBox.box, button);
+}
+
+// add listener to add-box button (defined in HTML)
 button.addEventListener('click', () => {
-  // create and define new box/container
-  var newBox = document.createElement("div");
-  newBox.classList.add("element");
-  newBox.id = num;
-
-  // adding title
-  var title = createTitle("New title");
-  newBox.appendChild(title);
-
-  // adding unordered list
-  var ul = document.createElement("ul");
-  var liFirst = document.createElement("li");
-  var liButton = document.createElement('button'); //ADD TEXT
-  liButton.classList.add('text-2xl');
-  liButton.textContent = "+";
-  liButton.addEventListener('click', () => {
-    var newLi = createLi("New item");
-    ul.insertBefore(newLi, liFirst);
-  });
-  liFirst.appendChild(liButton);
-
-  // button to add li
-  ul.appendChild(liFirst);
-  newBox.appendChild(ul);
-
-  // insert new box
-  const boxes = document.getElementById("boxes");
-  boxes.insertBefore(newBox, button);
-
-  num++;
+  var newBox = new Box(id);
+  boxes.insertBefore(newBox.box, button); // guarda la caja vacia con new title
+  localStorage.setItem(id, newBox.box.outerHTML);
+  id++;
+  localStorage.setItem('counter', id);
 });
 
 
