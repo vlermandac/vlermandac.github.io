@@ -40,7 +40,7 @@ class BoxManager {
 
   createBox(title, items = []) {
     const box = $(`
-      <div class="box p-4 border border-gray-300 rounded bg-magenta-500">
+      <div class="box p-4 border border-gray-300 rounded bg-orange-500">
         <h2 class="box-title text-xl mb-4" contenteditable="true">${title}</h2>
         <ul class="list-disc list-inside mb-4"></ul>
         <input class="new-item-input hidden" type="text" placeholder="Enter a new item...">
